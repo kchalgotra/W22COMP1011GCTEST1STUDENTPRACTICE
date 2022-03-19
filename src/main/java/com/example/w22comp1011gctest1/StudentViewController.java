@@ -61,31 +61,37 @@ public class StudentViewController implements Initializable {
         ArrayList<Student> filteredStudents = new ArrayList<>();
         filteredStudents.addAll(students);
 
-        for(Student student:students){
-            //Select only Ontario students
-            if(ontarioCheckBox.isSelected()){
-
+        if(ontarioCheckBox.isSelected()){
+            for(Student student : students){
                 if(!student.getProvince().equals("ON")){
-                    filteredStudents.remove(student);
-                }
-            }
-            //Select only honour roll
-            if(honourRollCheckBox.isSelected()){
-                if(student.getAvgGrade() < 80){
-                    filteredStudents.remove(student);
-                }
-            }
-            //filter students according to Area Code
-            String areaCode = areaCodeComboBox.getSelectionModel().getSelectedItem();
-            if(!areaCode.equals("All")){
-                if(!student.getTelephone().substring(0,3).equals(areaCode)){
                     filteredStudents.remove(student);
                 }
             }
         }
 
+        if(honourRollCheckBox.isSelected()){
+            for(Student student : students){
+                if(student.getAvgGrade() < 80){
+                    filteredStudents.remove(student);
+                }
+            }
+        }
+
+        String areaCode = areaCodeComboBox.getSelectionModel().getSelectedItem().substring(0,3);
+
+        for(Student student : students){
+            if(!areaCode.equals("All")){
+                if(!student.getTelephone().substring(0,3).equals(areaCode)){
+                    filteredStudents.remove(student);
+                }
+            }
+
+        }
+
         tableView.getItems().addAll(filteredStudents);
-        numOfStudentsLabel.setText("Number of student "+ tableView.getItems().size() );
+
+        numOfStudentsLabel.setText("Number of students: "+ tableView.getItems().size());
+
 
 
     }
@@ -124,13 +130,11 @@ public class StudentViewController implements Initializable {
     private ArrayList<String> getAreaCode2(){
 
         ArrayList<String> areaCodes = new ArrayList<>();
-
         areaCodes.add("All");
         for(Student student : students){
             String areaCode = student.getTelephone().substring(0,3);
             if(!areaCodes.contains(areaCode)){
                 areaCodes.add(areaCode);
-
             }
         }
         Collections.sort(areaCodes);

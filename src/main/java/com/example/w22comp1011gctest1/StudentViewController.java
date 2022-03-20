@@ -7,10 +7,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ResourceBundle;
-import java.util.TreeSet;
+import java.util.*;
 
 public class StudentViewController implements Initializable {
 
@@ -57,42 +54,37 @@ public class StudentViewController implements Initializable {
     @FXML
     private void applyFilter()  {
         tableView.getItems().clear();
-
         ArrayList<Student> filteredStudents = new ArrayList<>();
+
         filteredStudents.addAll(students);
 
-        if(ontarioCheckBox.isSelected()){
-            for(Student student : students){
-                if(!student.getProvince().equals("ON")){
-                    filteredStudents.remove(student);
-                }
-            }
-        }
-
-        if(honourRollCheckBox.isSelected()){
-            for(Student student : students){
-                if(student.getAvgGrade() < 80){
-                    filteredStudents.remove(student);
-                }
-            }
-        }
-
-        String areaCode = areaCodeComboBox.getSelectionModel().getSelectedItem().substring(0,3);
 
         for(Student student : students){
-            if(!areaCode.equals("All")){
-                if(!student.getTelephone().substring(0,3).equals(areaCode)){
-                    filteredStudents.remove(student);
-                }
+            //Only Ontario Students
+            if(ontarioCheckBox.isSelected()) {
+                    if (!student.getProvince().equals("ON"))
+                        filteredStudents.remove(student);
             }
+
+            if(honourRollCheckBox.isSelected()){
+                    if(student.getAvgGrade() <80)
+                        filteredStudents.remove(student);
+            }
+
+
+
+
+                String areaCode = areaCodeComboBox.getSelectionModel().getSelectedItem().substring(0,3);
+               if(!areaCode.equals("All")){
+                    if (!student.getTelephone().substring(0,3).equals(areaCode))
+                        filteredStudents.remove(student);
+                }
 
         }
 
-        tableView.getItems().addAll(filteredStudents);
 
+            tableView.getItems().addAll(filteredStudents);
         numOfStudentsLabel.setText("Number of students: "+ tableView.getItems().size());
-
-
 
     }
 
@@ -113,12 +105,12 @@ public class StudentViewController implements Initializable {
         tableView.getItems().addAll(students);
 
 
-
+        areaCodeComboBox.getItems().add("All");
         areaCodeComboBox.getItems().addAll(getAreaCode2());
         numOfStudentsLabel.setText("Number of students: "+ tableView.getItems().size());
     }
-/*
-    private TreeSet<String> getAreaCode(){
+
+/*    private TreeSet<String> getAreaCode(){
         TreeSet  areaCodes = new TreeSet();
         for(Student student : students ){
             areaCodes.add(student.getTelephone().substring(0,3));
@@ -130,7 +122,7 @@ public class StudentViewController implements Initializable {
     private ArrayList<String> getAreaCode2(){
 
         ArrayList<String> areaCodes = new ArrayList<>();
-        areaCodes.add("All");
+
         for(Student student : students){
             String areaCode = student.getTelephone().substring(0,3);
             if(!areaCodes.contains(areaCode)){
